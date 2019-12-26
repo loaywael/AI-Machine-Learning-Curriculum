@@ -3,7 +3,7 @@
 
 int main(int argc, char** argv) {
 
-    cv:: Mat img, channels[3];
+    cv:: Mat img, channels[3], mergedImg;
 
     img = cv::imread("tomato1.jpeg", cv::IMREAD_COLOR);
     cv::split(img, channels);
@@ -19,7 +19,11 @@ int main(int argc, char** argv) {
     cv::imshow("blue-channel", channels[0]);
     cv::imshow("green-channel", channels[1]);
     cv::imshow("red-channel", channels[2]);
+    cv::waitKey(0);
 
+    channels[1] = cv::Mat::zeros(img.size(), CV_8UC1);
+    cv::merge(channels, 3, mergedImg);
+    cv::imshow("merged-channels", mergedImg);
     cv::waitKey(0);
     cv::destroyAllWindows();
 
