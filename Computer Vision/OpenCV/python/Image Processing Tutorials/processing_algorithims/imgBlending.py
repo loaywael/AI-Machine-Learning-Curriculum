@@ -10,10 +10,10 @@ import cv2
 
 
 img1 = cv2.imread("gallery/face1.jpg", cv2.IMREAD_GRAYSCALE)
-img2 = cv2.imread("gallery/face0.jpg", cv2.IMREAD_GRAYSCALE)
+img2 = cv2.imread("gallery/tomato.jpg", cv2.IMREAD_GRAYSCALE)
 outImg = img1.copy()
 
-alpha = 0.5
+alpha = 0.75
 height, width = img1.shape[:2]
 
 for i in range(height):
