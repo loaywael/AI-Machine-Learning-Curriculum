@@ -7,7 +7,7 @@ hourseImg = cv2.imread("../../../gallery/hourse.jpeg", cv2.IMREAD_COLOR)
 
 
 def plotImgHisto(img):
-    for i, ch in enumerate(("r", "g", "b")):
+    for i, ch in enumerate(("B", "G", "R")):
         histo = cv2.calcHist([img], [i], mask=None, histSize=[255], ranges=[0, 256])
         plt.plot(histo, color=ch)
     plt.xlim([0, 256])

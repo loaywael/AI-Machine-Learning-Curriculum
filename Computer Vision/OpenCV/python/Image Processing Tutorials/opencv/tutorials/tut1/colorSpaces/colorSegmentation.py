@@ -2,14 +2,17 @@ import cv2
 import numpy as np
 
 
-def creatTrackBar(name):
+def creatTrackBar(name, cam="mi"):
+    web = 170, 60, 115, 179, 92, 206
+    mi = 147, 176, 85, 179, 255, 193
+    mode = mi if cam == "mi" else web
     cv2.namedWindow(name)
-    cv2.createTrackbar("lowerHue", name, 170, 179, lambda x: None)
-    cv2.createTrackbar("lowerSat", name, 60, 255, lambda x: None)
-    cv2.createTrackbar("lowerVal", name, 115, 255, lambda x: None)
-    cv2.createTrackbar("upperHue", name, 179, 179, lambda x: None)
-    cv2.createTrackbar("upperSat", name, 92, 255, lambda x: None)
-    cv2.createTrackbar("upperVal", name, 206, 255, lambda x: None)
+    cv2.createTrackbar("lowerHue", name, mode[0], 179, lambda x: None)
+    cv2.createTrackbar("lowerSat", name, mode[1], 255, lambda x: None)
+    cv2.createTrackbar("lowerVal", name, mode[2], 255, lambda x: None)
+    cv2.createTrackbar("upperHue", name, mode[3], 179, lambda x: None)
+    cv2.createTrackbar("upperSat", name, mode[4], 255, lambda x: None)
+    cv2.createTrackbar("upperVal", name, mode[5], 255, lambda x: None)
 
 
 def getTrackBarVals(name):
@@ -24,10 +27,14 @@ def getTrackBarVals(name):
     return np.array((lH, lS, lV)), np.array((uH, uS, uV))
 
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(2)
+width, height = int(cap.get(3)), int(cap.get(4))
 creatTrackBar("color-range TrackBar")
+codex = cv2.VideoWriter_fourcc('M', 'J', 'P', 'G')
+writer = cv2.VideoWriter("detectedColor.avi", codex, 20, (width, height))
 
 while True:
+    global recording
     _, frame = cap.read()
     hsvFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     lowObjColor, highObjColor = getTrackBarVals("color-range TrackBar")
@@ -37,6 +44,7 @@ while True:
     detectedObj = cv2.bitwise_or(gauBlr, medBlr)
     colorRange = cv2.morphologyEx(detectedObj, cv2.MORPH_CLOSE, np.ones((9, 9), dtype=np.uint8))
     colorRange = cv2.bitwise_and(frame, frame,  mask=detectedObj)
+    writer.write(colorRange)
     cv2.imshow("frame", colorRange)
     cv2.imshow("ranged-frame", detectedObj)
     if cv2.waitKey(1) & 0xFF == ord('q') or not cap.isOpened():
@@ -44,4 +52,5 @@ while True:
 
 
 cap.release()
+writer.release()
 cv2.destroyAllWindows()
