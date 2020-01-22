@@ -4,10 +4,11 @@ import matplotlib.pyplot as plt
 
 
 carImg = cv2.imread("../../../gallery/car_plate.jpg", cv2.IMREAD_COLOR)
+grayCarImg = cv2.cvtColor(carImg, cv2.COLOR_BGR2GRAY)
 haarPlatedPath = "../../../gallery/haarcascade_russian_plate_number.xml"
 
 plateClass = cv2.CascadeClassifier(haarPlatedPath)
-plates = plateClass.detectMultiScale(carImg, 1.2, 5)
+plates = plateClass.detectMultiScale(grayCarImg, 1.2, 5)
 
 for (x, y, w, h) in plates:
     cv2.rectangle(carImg, (x, y), (x+w, y+h), (255, 0, 0), 3)
